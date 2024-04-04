@@ -3,13 +3,14 @@ version: "3.8"
 services:
   backend:
     image: ${DOCKER_NAME}:${DOCKER_TAG}
-    container_name: app_${PROJECT_NAME}
+    container_name: backend_${PROJECT_NAME}
     restart: unless-stopped
     volumes:
-      - ./backend :/code/app
+      - ./backend:/code/backend
+    ports:
+      - "80:80"
     depends_on:
       - db
-    command: uvicorn app.main:app --reload --workers 4 --host 0.0.0.0 --port 8000
 
   db:
     image: postgres:${POSTGRES_VERSION}
@@ -29,7 +30,7 @@ services:
     container_name: pg_admin_${PROJECT_NAME}
     restart: unless-stopped
     ports:
-      - "8888:80"
+      - "8888:8888"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
