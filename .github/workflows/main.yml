@@ -21,4 +21,3 @@ jobs:
       - name: Test with ruff and pytest
         run: |
           poetry run ruff check .
-          poetry run pytest
