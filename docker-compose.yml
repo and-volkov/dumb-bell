@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  backend:
+    image: ${DOCKER_NAME}:${DOCKER_TAG}
+    container_name: app_${PROJECT_NAME}
+    restart: unless-stopped
+    volumes:
+      - ./backend :/code/app
+    depends_on:
+      - db
+    command: uvicorn app.main:app --reload --workers 4 --host 0.0.0.0 --port 8000
+
+  db:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: pg_db_${PROJECT_NAME}
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSRGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./data/local_pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pg_admin_${PROJECT_NAME}
+    restart: unless-stopped
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - ./data/pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+
+volumes:
+  local_pgdata:
+  pgadmin_data:
