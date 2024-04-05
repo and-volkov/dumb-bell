@@ -18,4 +18,5 @@ RUN touch README.md
 
 RUN poetry install --without dev && rm -rf $POETRY_CACHE_DIR
 COPY ./backend /code/backend
+COPY alembic.ini /code/alembic.ini
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
