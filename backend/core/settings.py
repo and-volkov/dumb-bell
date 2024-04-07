@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api"
 
     PROJECT_NAME: str
+    SECRET_KEY: str = "secret"
+    ALGORITHM: str = "HS256"
 
     SERVER_NAME: str
     SERVER_HOST: AnyHttpUrl

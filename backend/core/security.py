@@ -1,0 +1,37 @@
+import datetime as dt
+import logging
+
+from jose import jwt
+from passlib.context import CryptContext
+
+from backend.core.settings import settings
+
+# Suppress passlib warning (version conflict)
+logging.getLogger("passlib").setLevel(logging.ERROR)
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def create_access_token(data: dict, expires_delta: dt.timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = dt.datetime.now(dt.timezone.utc) + expires_delta
+    else:
+        expire = dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=60)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
+    return encoded_jwt
+
+
+if __name__ == "__main__":
+    print(get_password_hash("password"))
